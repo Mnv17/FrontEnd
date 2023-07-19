@@ -11,7 +11,6 @@ function Home (){
         navigate("/cars/create");
     }
 
-    
 
     return (
         <div className="homepage">
