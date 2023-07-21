@@ -1,59 +1,54 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-function Login() {
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  async function submit(e) {
-    e.preventDefault();
-
+  const handleLogin = async () => {
     try {
-      const response = await axios.post("https://lively-woolens-cod.cyclic.app/login", {
-        email,
-        password,
+      const response = await fetch('https://lively-woolens-cod.cyclic.app/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
-
-      if (response.data.message === "Login Successful") {
-        navigate("/", { state: { _id: email } });
-      } else if (response.data.message === "User not found. Register First") {
-        alert("User has not signed up");
+      const data = await response.json();
+      // console.log(data)
+      localStorage.setItem("token",data.token)
+      setMessage(data.message);
+      if (response.ok) {
+        navigate('/cars/create');
       }
     } catch (error) {
-      alert("Error: " + error.message);
+      setMessage('Error: ' + error.message);
     }
-  }
+  };
 
   return (
-    <div className="login">
-      <h1>Login</h1>
-
-      <form onSubmit={submit}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
-        <button type="submit">Submit</button>
-      </form>
-
-      <br />
-      <p>Don't have an account?</p>
-      <br />
-
-      <Link to="/users/signup">Signup!!</Link>
+    <div>
+      <h1>Login Page</h1>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={handleLogin}>Login</button>
+      <p>{message}</p>
+      <Link to="/users/signup">Don't have an account? Sign Up</Link>
     </div>
   );
-}
+};
 
 export default Login;

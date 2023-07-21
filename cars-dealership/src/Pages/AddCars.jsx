@@ -23,7 +23,7 @@ const AddCars = () => {
       mileage,
     };
 
-    axios.post('https://lively-woolens-cod.cyclic.app/create', carDetailsData)
+    axios.post('https://lively-woolens-cod.cyclic.app/cars/create', carDetailsData)
       .then((response) => {
         console.log('Car details added successfully!', response.data);
         setCarImage('');

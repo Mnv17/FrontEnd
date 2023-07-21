@@ -1,69 +1,53 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-function Signup() {
+const Signup = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  async function submit(e) {
-    e.preventDefault();
-
+  const handleSignUp = async () => {
     try {
-      const response = await axios.post("https://lively-woolens-cod.cyclic.app/signup", {
-        email,
-        password,
+      const response = await fetch('https://lively-woolens-cod.cyclic.app/users/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
-
-      if (response.data.message === "New User Register") {
-        navigate("/users/login", { state: { _id: email } });
-        console.log(response.data.message)
+      const data = await response.json();
+      setMessage(data.message);
+      if (response.ok) {
+        // If the response status is OK (200), navigate to the login page
+        navigate('/users/login');
       }
-      else if(response.data.message === "User already present" || response.data.message === "Request failed with status code 400"){
-        navigate("/users/login", { state: { _id: email } });
-        console.log(response.data.message)
-      }
-       else if (response.data.message === "Cannot Register The User") {
-        alert("Cannot Register The User");
-        console.log(response.data.message)
-      }
-      
     } catch (error) {
-      alert("Error: " + error.message);
-      console.log(error);
+      setMessage('Error: ' + error.message);
     }
-  }
-  
+  };
 
   return (
-    <div className="login">
-      <h1>Signup</h1>
-
-      <form onSubmit={submit}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
-        <button type="submit">Submit</button>
-      </form>
-
-      <br />
-      <p>Already have an account?</p>
-      <br />
-
-      <Link to="/users/login">Login!!</Link>
+    <div>
+      <h1>Signup Page</h1>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button onClick={handleSignUp}>Sign Up</button>
+      <p>{message}</p>
+      <Link to="/users/login">Already have an account? Login</Link>
     </div>
   );
-}
+};
 
 export default Signup;
