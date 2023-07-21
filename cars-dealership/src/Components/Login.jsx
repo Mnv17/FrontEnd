@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import "./Login.css";
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,7 +10,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://localhost:8080/users/login', {
+      const response = await fetch('https://attryb-88g8.onrender.com/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -18,11 +18,10 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
       const data = await response.json();
-      // console.log(data)
-      localStorage.setItem("token",data.token)
+      localStorage.setItem('token', data.token);
       setMessage(data.message);
       if (response.ok) {
-        navigate('/cars/create');
+        navigate('/cars');
       }
     } catch (error) {
       setMessage('Error: ' + error.message);
@@ -30,23 +29,29 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <h1>Login Page</h1>
+    <div className="login-container">
+      <h1 className="login-title">Login Page</h1>
       <input
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        className="login-input"
       />
       <input
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        className="login-input"
       />
-      <button onClick={handleLogin}>Login</button>
-      <p>{message}</p>
-      <Link to="/users/signup">Don't have an account? Sign Up</Link>
+      <button onClick={handleLogin} className="login-button">
+        Login
+      </button>
+      <p className="login-message">{message}</p>
+      <Link to="/users/signup" className="login-link">
+        Don't have an account? Sign Up
+      </Link>
     </div>
   );
 };

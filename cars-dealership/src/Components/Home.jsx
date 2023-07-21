@@ -1,31 +1,29 @@
-import React from "react"
-import {Link, useLocation, useNavigate} from 'react-router-dom';
-import AddCars from "../Pages/AddCars";
+import React from "react";
+import { Link,  useNavigate } from 'react-router-dom';
+import "./Home.css";
 
-function Home (){
-    const location=useLocation()
-    const navigate = useNavigate();
+function Home() {
+  const navigate = useNavigate();
 
-    const handleButton = (e) => {
-        e.preventDefault();
-        navigate("/cars/create");
-    }
+  const handleButton = (e) => {
+    e.preventDefault();
+    navigate("/cars");
+  };
 
-
-    return (
-        <div className="homepage">
-
-            <h1>Hello and welcome</h1>
-            <h1>lets choose your dream car</h1>
-            <div>
-                <button onClick={handleButton}>All Cars</button>
-                <Link to="/users/login">Login!!</Link>
-
-            </div>
-
-        </div>
-    )
+  return (
+    <div className="homepage">
+      <h1 className="homepage-title">Hello and welcome</h1>
+      <h1 className="homepage-subtitle">Let's choose your dream car</h1>
+      <div className="homepage-buttons">
+        <button onClick={handleButton} className="homepage-button">
+          All Cars
+        </button>
+        <Link to="/users/login" className="homepage-login-link">
+          Login
+        </Link>
+      </div>
+    </div>
+  );
 }
 
-
-export default Home
+export default Home;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
+import "./Signup.css";
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -10,7 +10,7 @@ const Signup = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await fetch('http://localhost:8080/users/signup', {
+      const response = await fetch('https://attryb-88g8.onrender.com/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -20,7 +20,6 @@ const Signup = () => {
       const data = await response.json();
       setMessage(data.message);
       if (response.ok) {
-        // If the response status is OK (200), navigate to the login page
         navigate('/users/login');
       }
     } catch (error) {
@@ -29,23 +28,29 @@ const Signup = () => {
   };
 
   return (
-    <div>
-      <h1>Signup Page</h1>
+    <div className="signup-container">
+      <h1 className="signup-title">Signup Page</h1>
       <input
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        className="signup-input"
       />
       <input
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        className="signup-input"
       />
-      <button onClick={handleSignUp}>Sign Up</button>
-      <p>{message}</p>
-      <Link to="/users/login">Already have an account? Login</Link>
+      <button onClick={handleSignUp} className="signup-button">
+        Sign Up
+      </button>
+      <p className="signup-message">{message}</p>
+      <Link to="/users/login" className="signup-link">
+        Already have an account? Login
+      </Link>
     </div>
   );
 };
