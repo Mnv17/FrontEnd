@@ -74,7 +74,7 @@ const CarList = () => {
     setEditingCarId(null);
   };
 
-  const handleSaveChanges = async (id, updatedCarData) => {
+  const handleSaveChanges = async (id) => {
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -88,14 +88,29 @@ const CarList = () => {
         },
       };
 
-      const response = await axios.put(
+      const carToUpdate = cars.find((car) => car._id === id);
+      if (!carToUpdate.title || !carToUpdate.price) {
+        setError("Car title and price cannot be empty");
+        return;
+      }
+
+      const updatedCarData = {
+        title: carToUpdate.title,
+        price: carToUpdate.price,
+        mileage: carToUpdate.mileage, // Add any other properties you want to update
+      };
+
+      const response = await axios.patch(
         `https://attryb-88g8.onrender.com/cars/update/${id}`,
         updatedCarData,
         config
       );
 
       if (response.status === 200) {
-        await getCars();
+        setCars((prevCars) =>
+          prevCars.map((car) => (car._id === id ? { ...car, ...updatedCarData } : car))
+        );
+
         setEditingCarId(null);
       } else {
         setError("Failed to update car");
@@ -182,23 +197,21 @@ const CarList = () => {
                       type="text"
                       value={car.title}
                       onChange={(e) =>
-                        handleSaveChanges(car._id, {
-                          ...car,
-                          title: e.target.value,
-                        })
+                        setCars((prevCars) =>
+                          prevCars.map((prevCar) => (prevCar._id === car._id ? { ...prevCar, title: e.target.value } : prevCar))
+                        )
                       }
                     />
                     <input
                       type="number"
                       value={car.price}
                       onChange={(e) =>
-                        handleSaveChanges(car._id, {
-                          ...car,
-                          price: e.target.value,
-                        })
+                        setCars((prevCars) =>
+                          prevCars.map((prevCar) => (prevCar._id === car._id ? { ...prevCar, price: e.target.value } : prevCar))
+                        )
                       }
                     />
-                    <button onClick={() => handleSaveChanges(car._id, car)}>
+                    <button onClick={() => handleSaveChanges(car._id)}>
                       Save Changes
                     </button>
                     <button onClick={handleCancelEdit}>Cancel</button>
