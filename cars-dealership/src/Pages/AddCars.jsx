@@ -15,16 +15,22 @@ const AddCars = () => {
     e.preventDefault();
 
     const carDetailsData = {
-      carImage,
-      carTitle,
-      bulletPoints: bulletPoints.filter(point => point !== ''), 
+      image:carImage,
+      title:carTitle,
+      description: bulletPoints.filter(point => point !== ''), 
       colors,
       price,
       mileage,
     };
+// console.log(carDetailsData)
+const token = localStorage.getItem("token")
+console.log(token)
+    axios.post('http://localhost:8080/cars/create', carDetailsData, {headers: { 
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"}})
 
-    axios.post('https://lively-woolens-cod.cyclic.app/cars/create', carDetailsData)
       .then((response) => {
+        console.log(response)
         console.log('Car details added successfully!', response.data);
         setCarImage('');
         setCarTitle('');

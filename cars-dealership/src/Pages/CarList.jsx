@@ -20,14 +20,15 @@ const CarList = () => {
 
       const config = {
         headers: {
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       };
 
       const response = await axios.get(
-        "https://lively-woolens-cod.cyclic.app/cars",
+        "http://localhost:8080/cars",
         config
       );
+      // console.log(response.data.cars)
       setCars(response.data.cars);
     } catch (error) {
       // console.error("Error fetching cars:", error.message); 
@@ -45,12 +46,12 @@ const CarList = () => {
 
       const config = {
         headers: {
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       };
 
       await axios.delete(
-        `https://lively-woolens-cod.cyclic.app/cars/delete/${id}`,
+        `http://localhost:8080/cars/delete/${id}`,
         config
       );
       getCars(); 
@@ -69,16 +70,36 @@ const CarList = () => {
       {cars.length === 0 ? (
         <p>No cars available</p>
       ) : (
-        <ul>
+      <div>
           {cars.map((car) => (
             <li key={car._id}>
-              <p>Car Name: {car.name}</p>
-              <p>Car Model: {car.model}</p>
-              <p>Car Year: {car.year}</p>
+              <img src={car.image}/>
+              <p>Car Name: {car.title}</p>
+              <ul>
+                <p>Car Description:</p>
+                <li>
+                 {car.description[0]}
+                </li>
+                <li>
+                {car.description[1]}
+                </li>
+                <li>
+                {car.description[2]}
+                </li>
+                <li>
+                {car.description[3]}
+                </li>
+                <li>
+                {car.description[4]}
+                </li>
+              </ul>
+              <p>Car Color: {car.colors}</p>
+              <p>Car Mileage: {car.mileage}</p>
+              <p>Car Price: {car.price}</p>
               <button onClick={() => handleDelete(car._id)}>Delete</button>
             </li>
           ))}
-        </ul>
+        </div>
       )}
       <Link to="/cars/create">Create a new car</Link>
     </div>

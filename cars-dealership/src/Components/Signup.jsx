@@ -10,7 +10,7 @@ const Signup = () => {
 
   const handleSignUp = async () => {
     try {
-      const response = await fetch('https://lively-woolens-cod.cyclic.app/users/signup', {
+      const response = await fetch('http://localhost:8080/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
