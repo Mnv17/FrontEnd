@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import "./Login.css";
+import './Login.css';
+
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true); 
       const response = await fetch('https://attryb-88g8.onrender.com/users/login', {
         method: 'POST',
         headers: {
@@ -20,11 +23,13 @@ const Login = () => {
       const data = await response.json();
       localStorage.setItem('token', data.token);
       setMessage(data.message);
+      setIsLoading(false);
       if (response.ok) {
         navigate('/cars');
       }
     } catch (error) {
       setMessage('Error: ' + error.message);
+      setIsLoading(false); 
     }
   };
 
@@ -45,9 +50,15 @@ const Login = () => {
         onChange={(e) => setPassword(e.target.value)}
         className="login-input"
       />
-      <button onClick={handleLogin} className="login-button">
-        Login
-      </button>
+      {isLoading ? (
+        <button className="login-button" disabled>
+          Loading ....
+        </button>
+      ) : (
+        <button onClick={handleLogin} className="login-button">
+          Login
+        </button>
+      )}
       <p className="login-message">{message}</p>
       <Link to="/users/signup" className="login-link">
         Don't have an account? Sign Up

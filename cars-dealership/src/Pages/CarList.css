@@ -60,13 +60,10 @@
     font-size: 20px;
     color: #333;
     margin-bottom: 16px;
+    margin-left: 1.5rem;
   }
 
   .car{
-    margin-left: 1rem;
-    /* width: 100%; */
-    /* border: 1px solid red; */
-    /* align-items: center; */
     justify-content: center;
   }
   
@@ -77,6 +74,8 @@
     color: #fff;
     text-decoration: none;
     border-radius: 4px;
+    margin-left: 1.5rem;
+
   }
   
   .car-list-create-link:hover {
@@ -146,4 +145,7 @@
     background-color: #c82333;
   }
   
+  .signup-link{
+    margin-left: 1rem;
+  }
   

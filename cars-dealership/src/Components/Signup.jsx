@@ -5,10 +5,12 @@ const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
+  const [isLoading,setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const handleSignUp = async () => {
+    setIsLoading(true); 
     try {
       const response = await fetch('https://attryb-88g8.onrender.com/users/signup', {
         method: 'POST',
@@ -19,11 +21,13 @@ const Signup = () => {
       });
       const data = await response.json();
       setMessage(data.message);
+      setIsLoading(false);
       if (response.ok) {
         navigate('/users/login');
       }
     } catch (error) {
       setMessage('Error: ' + error.message);
+      setIsLoading(false); 
     }
   };
 
@@ -44,9 +48,11 @@ const Signup = () => {
         onChange={(e) => setPassword(e.target.value)}
         className="signup-input"
       />
-      <button onClick={handleSignUp} className="signup-button">
+     {isLoading ?  <button className="signup-button">
+        Loading ....
+      </button> :  <button onClick={handleSignUp} className="signup-button">
         Sign Up
-      </button>
+      </button>}
       <p className="signup-message">{message}</p>
       <Link to="/users/login" className="signup-link">
         Already have an account? Login

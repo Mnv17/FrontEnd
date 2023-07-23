@@ -7,6 +7,8 @@ const CarList = () => {
   const [cars, setCars] = useState([]);
   const [error, setError] = useState(null);
   const [editingCarId, setEditingCarId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [filters, setFilters] = useState({
     color: "",
     price: "",
@@ -19,6 +21,7 @@ const CarList = () => {
 
   const getCars = async () => {
     try {
+      setIsLoading(true);
       const token = localStorage.getItem("token");
       if (!token) {
         setError("Authentication token missing");
@@ -36,13 +39,16 @@ const CarList = () => {
         config
       );
       setCars(response.data.cars);
+      setIsLoading(false);
     } catch (error) {
       setError("Error fetching cars");
+      setIsLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
     try {
+      setIsLoading(true);
       const token = localStorage.getItem("token");
       if (!token) {
         setError("Authentication token missing");
@@ -60,11 +66,14 @@ const CarList = () => {
         config
       );
       getCars();
+      setIsLoading(false);
     } catch (error) {
       console.error("Error deleting car:", error.response);
       setError("Error deleting car");
+      setIsLoading(false);
     }
   };
+  console.log(isLoading);
 
   const handleEdit = (id) => {
     setEditingCarId(id);
@@ -76,6 +85,7 @@ const CarList = () => {
 
   const handleSaveChanges = async (id) => {
     try {
+      setIsLoading(true);
       const token = localStorage.getItem("token");
       if (!token) {
         setError("Authentication token missing");
@@ -97,7 +107,7 @@ const CarList = () => {
       const updatedCarData = {
         title: carToUpdate.title,
         price: carToUpdate.price,
-        mileage: carToUpdate.mileage, // Add any other properties you want to update
+        mileage: carToUpdate.mileage, 
       };
 
       const response = await axios.patch(
@@ -105,6 +115,7 @@ const CarList = () => {
         updatedCarData,
         config
       );
+      setIsLoading(false);
 
       if (response.status === 200) {
         setCars((prevCars) =>
@@ -118,6 +129,7 @@ const CarList = () => {
     } catch (error) {
       console.error("Error updating car:", error.response);
       setError("Error updating car");
+      setIsLoading(false);
     }
   };
 
@@ -139,12 +151,14 @@ const CarList = () => {
     });
   };
 
+  const token = localStorage.getItem("token")
+
   return (
     <>
       <h1 className="car-list-title">Car List</h1>
-      <div className="car">
+      <div className="car" style={{display:token ? "inline" : "none"}}>
         <h3 className="addCar">Want to add some Cars</h3>
-        <Link to="/cars/create" className="car-list-create-link">
+        <Link to="/cars/create" className="car-list-create-link" >
           Create a new car
         </Link>
       </div>
@@ -211,9 +225,11 @@ const CarList = () => {
                         )
                       }
                     />
-                    <button onClick={() => handleSaveChanges(car._id)}>
+                    {isLoading ? <button >
+                      Loading ....
+                    </button> : <button onClick={() => handleSaveChanges(car._id)}>
                       Save Changes
-                    </button>
+                    </button>}
                     <button onClick={handleCancelEdit}>Cancel</button>
                   </div>
                 ) : (
@@ -234,18 +250,26 @@ const CarList = () => {
                     <p>Car Mileage: {car.mileage}</p>
                     <p>Car Price: {car.price}</p>
                     <div className="car-list-button-container">
-                      <button
+                      {isLoading ? <button
+                        className="car-list-delete-button"
+                      >
+                        Loading ....
+                      </button> : <button
                         onClick={() => handleDelete(car._id)}
                         className="car-list-delete-button"
                       >
                         Delete
-                      </button>
-                      <button
+                      </button>}
+                      {isLoading ? <button
+                        className="car-list-edit-button"
+                      >
+                        Loading ....
+                      </button> : <button
                         onClick={() => handleEdit(car._id)}
                         className="car-list-edit-button"
                       >
                         Edit
-                      </button>
+                      </button>}
                     </div>
                   </>
                 )}

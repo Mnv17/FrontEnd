@@ -10,6 +10,7 @@ const AddCars = () => {
   const [colors, setColors] = useState('');
   const [price, setPrice] = useState('');
   const [mileage, setMileage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const [bulletPoints, setBulletPoints] = useState(['', '', '', '', '']);
 
@@ -26,6 +27,7 @@ const AddCars = () => {
     };
 
     try {
+      setIsLoading(true);
       const token = localStorage.getItem('token');
       const response = await axios.post(
         'https://attryb-88g8.onrender.com/cars/create',
@@ -37,6 +39,7 @@ const AddCars = () => {
           },
         }
       );
+      setIsLoading(false);
       console.log('Car details added successfully!', response.data);
       setCarImage('');
       setCarTitle('');
@@ -46,6 +49,7 @@ const AddCars = () => {
       setBulletPoints(['', '', '', '', '']);
     } catch (error) {
       console.error('Error adding car details:', error);
+      setIsLoading(false);
     }
   };
 
@@ -165,9 +169,11 @@ const AddCars = () => {
             required
           />
         </div>
-        <button type="submit" className="add-cars-button">
+        {isLoading ? <button type="submit" className="add-cars-button">
+          Loading ....
+        </button> : <button type="submit" className="add-cars-button">
           Add Car Details
-        </button>
+        </button>}
       </form>
      
     </div>
